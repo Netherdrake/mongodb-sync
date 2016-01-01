@@ -8,22 +8,22 @@ BACKUP_NAME=$(date +%Y.%m.%d.%H%M%S)
 echo "=> Backup started"
 if ${BACKUP_CMD} ;then
 
-    echo "   Backup succeeded"
+    echo "...Backup succeeded"
 
     if [[ -n "$S3_BACKUP" ]]; then
 
-        echo "   Archiving and backing up dump to S3"
+        echo "...Archiving and backing up dump to S3"
 
-        echo "   Creating archive at /backup/${BACKUP_NAME}.tgz"
-        tar czf "/backup/${BACKUP_NAME}.tgz" "/backup/${BACKUP_NAME}"
+        echo "...Creating archive at /backup/$BACKUP_NAME.tgz"
+        tar czf "/backup/$BACKUP_NAME.tgz" "/backup/$BACKUP_NAME"
 
-        echo "   Copying to S3"
-        aws s3 cp "/backup/${BACKUP_NAME}.tgz" s3://$S3_BUCKET/$S3_PATH/${BACKUP_NAME}.tgz
+        echo "...Copying to S3"
+        aws s3 cp "/backup/$BACKUP_NAME.tgz" s3://$S3_BUCKET/$S3_PATH/$BACKUP_NAME.tgz
 
         if [ $? == 0 ]; then
-            rm "/backup/${BACKUP_NAME}.tgz"
+            rm "/backup/$BACKUP_NAME.tgz"
         else
-            >&2 echo "couldn't transfer /backup/${BACKUP_NAME}.tgz to S3"
+            >&2 echo "...couldn't transfer /backup/$BACKUP_NAME.tgz to S3"
         fi
 
     fi
